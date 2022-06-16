@@ -6,7 +6,6 @@ from flask import Flask , jsonify
 import boto3
 
 
-
 def get_seceret(*,secret_name=None,secret_key=None,region_name=None):
 
   secrets_client = boto3.client(service_name ="secretsmanager",region_name=region_name)
@@ -20,7 +19,7 @@ def get_from_cache(*,host=None):
   
   try: 
 
-    redis_con = redis.Redis(host=redis_host,port=redis_port)
+    redis_con = redis.Redis(host=redis_rhost,port=redis_rport,password='redis_password')
     cached_result = redis_con.get(host)
      
     if cached_result:
@@ -37,15 +36,12 @@ def get_from_cache(*,host=None):
 
     return "Error In get_from_cache function."
 
-    
- 
-
 
 def set_to_cache(*,host=None,ipgeolocation_key=None):
   
   try:
 
-    redis_con = redis.Redis(host=redis_host,port=redis_port)
+    redis_con = redis.Redis(host=redis_rhost,port=redis_rport,password='redis_password')
     ipgeolocation_url = "https://api.ipgeolocation.io/ipgeo?apiKey={}&ip={}".format(ipgeolocation_key,host)
     geodata = requests.get(url=ipgeolocation_url)
     geodata = geodata.json()
@@ -58,8 +54,6 @@ def set_to_cache(*,host=None,ipgeolocation_key=None):
   except:
    
     return "Error In set_to_cache function."
-
-    
 
 
 app = Flask(__name__)
@@ -77,19 +71,15 @@ def ipstack(ip=None):
 
   return jsonify(output)
 
-
-
-    
-
-
-
-
-
 if __name__ == "__main__":
 
-  redis_port = os.getenv("REDIS_PORT","6379")
-  redis_host = os.getenv("REDIS_HOST",None)
-  app_port = os.getenv("APP_PORT","8080")
+  redis_wport = os.getenv("REDIS_WRITE_PORT","6379")
+  redis_rport = os.getenv("REDIS_READ_PORT","8080")
+  redis_whost = os.getenv("REDIS_WRITE_HOST",None)
+  redis_rhost = os.getenv("REDIS_READ_HOST",redis-lb-f0b840022e852792.elb.ap-south-1.amazonaws.com)
+  redis_password = os.getenv("REDIS_PASSWORD",None)
+  app_port = os.getenv("APP_PORT","7070")
+  
   ipgeolocation_key = os.getenv("API_KEY", None)
   ipgeolocation_key_from_secret = os.getenv("API_KEY_FROM_SECRETSMANAGER",False)
   ipgeolocation_key_secret_name = os.getenv("SECRET_NAME",None)
@@ -104,11 +94,4 @@ if __name__ == "__main__":
 
       
   app.run(port=app_port,host="0.0.0.0",debug=True)
-  
-
-
-
-
-
-
-
+ 
