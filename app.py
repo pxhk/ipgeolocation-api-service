@@ -76,7 +76,7 @@ if __name__ == "__main__":
   redis_wport = os.getenv("REDIS_WRITE_PORT","6379")
   redis_rport = os.getenv("REDIS_READ_PORT","8080")
   redis_whost = os.getenv("REDIS_WRITE_HOST",None)
-  redis_rhost = os.getenv("REDIS_READ_HOST",redis-lb-f0b840022e852792.elb.ap-south-1.amazonaws.com)
+  redis_rhost = os.getenv("REDIS_READ_HOST","redis-lb-f0b840022e852792.elb.ap-south-1.amazonaws.com")
   redis_password = os.getenv("REDIS_PASSWORD",None)
   app_port = os.getenv("APP_PORT","7070")
   
