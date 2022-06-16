@@ -41,7 +41,7 @@ def set_to_cache(*,host=None,ipgeolocation_key=None):
   
   try:
 
-    redis_con = redis.Redis(host=redis_rhost,port=redis_rport,password=redis_password)
+    redis_con = redis.Redis(host=redis_whost,port=redis_wport,password=redis_password)
     ipgeolocation_url = "https://api.ipgeolocation.io/ipgeo?apiKey={}&ip={}".format(ipgeolocation_key,host)
     geodata = requests.get(url=ipgeolocation_url)
     geodata = geodata.json()
